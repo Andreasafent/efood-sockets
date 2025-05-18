@@ -5,6 +5,8 @@ const express = require('express');
 const { Server } = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const axiosInstance = require('./lib/axiosInstance');
+const { axios } = require('axios');
 
 const app = express();
 const server = http.createServer(app);
@@ -30,7 +32,14 @@ io.on('connection', (socket) => {
     console.log('a user connected ' + socket.id);
 
     socket.on('driver-location', (data) => {
-        console.log(data);
+        axiosInstance
+            .post('/driver-location', data)
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.error('[Error]', error);
+            });
     });
 
     socket.on('disconnect', () => {
